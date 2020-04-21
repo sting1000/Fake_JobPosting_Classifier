@@ -1,0 +1,17 @@
+# Created by .ignore support plugin (hsz.mobi)
+.DS_Store
+.idea/.gitignore
+.idea/JobPosting.iml
+.idea/dictionaries/
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.ipynb_checkpoints/
+__pycache__/
+albert_base/
+albert_base_en_tfhub/
+bert_base/
+env/
+model/
+data/
