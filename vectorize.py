@@ -4,7 +4,7 @@ import numpy as np
 import fasttext
 
 
-def victorize_ft(X_train, X_test, col, path='./model/', training=True, dim=300, epoch=25, lr=0.05):
+def victorize_ft(X_train, X_test, col, path='./model/', training=False, dim=300, epoch=25, lr=0.05):
     # train ftmodel
     if training:
         X_train[[col]].to_csv(path + "ft.txt", index=False)
@@ -28,8 +28,18 @@ def victorize_cbow(X_train, X_test, col):
     return X_train_wvec, X_test_wvec
 
 
-def load_glove(path='../../glove/glove.6B.200d.txt', dim=200):
-    # Glove
+def victorize_tfidf(X_train, X_test, col):
+    # train 
+    tfidf_vectorizer = TfidfVectorizer()
+    X_train_wvec = tfidf_vectorizer.fit_transform(X_train[col])
+    X_test_wvec = tfidf_vectorizer.transform(X_test[col])
+
+    X_train_wvec = hstack((X_train_wvec, X_train.drop(col, 1).astype(float)))
+    X_test_wvec = hstack((X_test_wvec, X_test.drop(col, 1).astype(float)))
+    return X_train_wvec, X_test_wvec
+
+
+def victorize_glove(X_train, X_test, col, path='../../glove/glove.6B.300d.txt', dim=300):
     embeddings_index = {}
     with open(path, 'r') as f:
         for line in f:
@@ -38,19 +48,10 @@ def load_glove(path='../../glove/glove.6B.200d.txt', dim=200):
             vectors = np.asarray(values[1:], 'float32')
             embeddings_index[word] = vectors
     f.close()
-    return embeddings_index
 
-
-def victorize_glove(X_train, X_test, col, embedding, dim=200):
-    X_train_vec = np.empty((0, dim))
-    for text in X_train[col]:
-        X_train_vec = np.vstack((X_train_vec, process_words(text, embedding, dim)))
-    X_train_vec = hstack((X_train_vec, X_train.drop(col, 1).astype(float)))
-
-    X_test_vec = np.empty((0, dim))
-    for text in X_test[col]:
-        X_test_vec = np.vstack((X_test_vec, process_words(text, embedding, dim)))
-    X_test_vec = hstack((X_test_vec, X_test.drop(col, 1).astype(float)))
+    # use dictionary to convert corpus
+    X_train_vec = corpus_to_glvector(embeddings_index, X_train, col, dim)
+    X_test_vec = corpus_to_glvector(embeddings_index, X_test, col, dim)
 
     return X_train_vec, X_test_vec
 
@@ -75,3 +76,11 @@ def corpus_to_ftvector(ftmodel, X_train, col, dim):
         vec_corp = np.vstack((vec_corp, ftmodel.get_sentence_vector(text)))
     vec = hstack((vec_corp, X_train.drop(col, 1).astype(float)))
     return vec
+
+
+def corpus_to_glvector(embeddings_index, X, col, dim):
+    X_vec = np.empty((0, dim))
+    for text in X[col]:
+        X_vec = np.vstack((X_vec, process_words(text, embeddings_index, dim)))
+    X_vec = hstack((X_vec, X.drop(col, 1).astype(float)))
+    return X_vec
