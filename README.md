@@ -10,6 +10,7 @@ To have a better understanding of dataset, please download the [data_report](htt
 ## Environment:
 * Python 3.6
 * Tensorflow 1.15
+
 Other lib please refer to enviroment.yml
 
 ## Notebook Outline:
