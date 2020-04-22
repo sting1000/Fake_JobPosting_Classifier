@@ -1,10 +1,9 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
-import matplotlib.pyplot as plt
 import tensorflow as tf
 import numpy as np
 from sklearn.metrics import average_precision_score, precision_recall_curve
-from sklearn.metrics import confusion_matrix, plot_confusion_matrix
+from sklearn.metrics import confusion_matrix, plot_confusion_matrix, plot_precision_recall_curve
 
 sns.set(style="whitegrid")
 
@@ -52,25 +51,28 @@ def plot_aucprc(model, X_test, y_test):
     :return:
     """
     try:
-        # scores = model.decision_function(X_test)
-        scores = model.predict_proba(X_test)[:, 1]
+        scores = model.decision_function(X_test)
+        # scores = model.predict_proba(X_test)[:, 1]
     except:
         scores = model.predict(X_test)
 
-    precision, recall, _ = precision_recall_curve(y_test, scores, pos_label=0)
+    
     average_precision = average_precision_score(y_test, scores)
+    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
 
-    print('Average precision-recall score: {0:0.3f}'.format(
-        average_precision))
+    disp = plot_precision_recall_curve(model, X_test, y_test)
+    disp.ax_.set_title('2-class Precision-Recall curve: '
+                    'AP={0:0.2f}'.format(average_precision))
 
-    plt.plot(recall, precision, label='area = %0.3f' % average_precision, color="green")
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel('Recall')
-    plt.ylabel('Precision')
-    plt.title('Precision Recall Curve')
-    plt.legend(loc="best")
-    plt.show()
+    # precision, recall, _ = precision_recall_curve(y_test, scores, pos_label=0)
+    # plt.plot(recall, precision, label='area = %0.3f' % average_precision, color="green")
+    # plt.xlim([0.0, 1.0])
+    # plt.ylim([0.0, 1.05])
+    # plt.xlabel('Recall')
+    # plt.ylabel('Precision')
+    # plt.title('Precision Recall Curve')
+    # plt.legend(loc="best")
+    # plt.show()
 
 
 def add_accum(df, col):

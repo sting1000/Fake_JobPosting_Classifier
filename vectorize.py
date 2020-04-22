@@ -39,7 +39,7 @@ def victorize_tfidf(X_train, X_test, col):
     return X_train_wvec, X_test_wvec
 
 
-def victorize_glove(X_train, X_test, col, path='../../glove/glove.6B.300d.txt', dim=300):
+def victorize_glove(X_train, X_test, col, path='../../glove/glove.42B.300d.txt', dim=300):
     embeddings_index = {}
     with open(path, 'r') as f:
         for line in f:
@@ -52,23 +52,7 @@ def victorize_glove(X_train, X_test, col, path='../../glove/glove.6B.300d.txt', 
     # use dictionary to convert corpus
     X_train_vec = corpus_to_glvector(embeddings_index, X_train, col, dim)
     X_test_vec = corpus_to_glvector(embeddings_index, X_test, col, dim)
-
     return X_train_vec, X_test_vec
-
-
-def process_words(text, embeddings_index, dim):
-    M = []
-    for w in text:
-        try:
-            M.append(embeddings_index[w])
-        except:
-            continue
-    M = np.array(M)
-    v = M.sum(axis=0)
-    if type(v) != np.ndarray:
-        return np.zeros(dim)
-    return v / np.sqrt((v ** 2).sum())
-
 
 def corpus_to_ftvector(ftmodel, X_train, col, dim):
     vec_corp = np.empty((0, dim))
@@ -84,3 +68,16 @@ def corpus_to_glvector(embeddings_index, X, col, dim):
         X_vec = np.vstack((X_vec, process_words(text, embeddings_index, dim)))
     X_vec = hstack((X_vec, X.drop(col, 1).astype(float)))
     return X_vec
+
+def process_words(text, embeddings_index, dim):
+    M = []
+    for w in text:
+        try:
+            M.append(embeddings_index[w])
+        except:
+            continue
+    M = np.array(M)
+    v = M.sum(axis=0)
+    if type(v) != np.ndarray:
+        return np.zeros(dim)
+    return v / np.sqrt((v ** 2).sum())
