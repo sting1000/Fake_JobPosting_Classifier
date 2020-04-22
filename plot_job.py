@@ -46,30 +46,27 @@ def plot_cm(model, X_test, y_test):
 def plot_aucprc(model, X_test, y_test):
     """
     Function to draw AUC plot
-    :param model: a trained model, support Classifier and NN
+    :param model: Classifier, a trained model
     :param X_test: dataframe
     :param y_test: dataframe with one lable column
-    :return:
+    :return: None
     """
    
 
     # draw prc
-    
     try:
         scores = model.decision_function(X_test)
-        average_precision = average_precision_score(y_test, scores)
-        disp = plot_precision_recall_curve(model, X_test, y_test)
-        disp.ax_.set_title('Precision-Recall curve: '
-                        'AP={0:0.2f}'.format(average_precision))
     except:
-        scores = model.predict(X_test)
-        average_precision = average_precision_score(y_test, scores)
+        scores = model.predict_proba(X_test)[:, 1]
+    # except: 
+    #     scores = model.predict(X_test)
 
-    print('Precision-Recall curve: '
+    # try:
+    average_precision = average_precision_score(y_test, scores)
+    disp = plot_precision_recall_curve(model, X_test, y_test)
+    disp.ax_.set_title('Precision-Recall curve: '
                         'AP={0:0.2f}'.format(average_precision))
-    plt.show()
-
-    # draw roc
+    # Draw roc
     fpr, tpr, _ = roc_curve(np.ravel(y_test), scores)
     roc_auc = auc(fpr, tpr)
 

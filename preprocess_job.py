@@ -72,17 +72,32 @@ def oversampling_smote(X_train, y_train, random_state=42, n_jobs=-1, k_neighbors
 
 
 def tokenizer_sp(docs):
+    """
+    tokenize docs use simple_process in Gensim
+    :param docs: list of String
+    :return: iterator
+    """
     for doc in tqdm(docs):
         # set deacc=True to remove wired signs
         yield simple_preprocess(str(doc), deacc=True)
 
 
 def tokenizer_wt(docs):
+    """
+    tokenize docs use word_tokenize
+    :param docs: list of String
+    :return: iterator
+    """
     for doc in tqdm(docs):
         yield [reg_filter(w) for w in word_tokenize(str(doc))]
 
 
 def reg_filter(sentence):
+    """
+    use regular expression to clean sentence
+    :param sentence: string
+    :return: string
+    """
     text = sentence.lower()
     text = re.sub('\[.*?\]', ' ', text)
     text = re.sub('https?://\S+|www\.\S+', '<URL>', text)
@@ -95,12 +110,23 @@ def reg_filter(sentence):
 
 
 def remove_stopwords(texts):
+    """
+    remove stopwords in text
+    :param texts: string
+    :return: iterator
+    """
     stop_words = stopwords.words('english')
     for sentence in tqdm(texts):
         yield [word for word in sentence if word not in stop_words]
 
 
 def lemmatization(docs, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
+    """
+    lemma docs use spacy
+    :param docs: list of String
+    :param allowed_postags: list of PoS tags, like 'NOUN', 'ADJ', 'VERB', 'ADV'
+    :return: iterator
+    """
     texts_out = []
     sp = spacy.load("en_core_web_sm")
     for doc in tqdm(docs):
