@@ -7,6 +7,11 @@ And it can be used to create classification models which can learn the job descr
 
 To have a better understanding of dataset, please download the [data_report](https://github.com/sting1000/Fake_JobPosting_Classifier/blob/master/data_report.html)
 
+## Environment:
+* Python 3.6
+* Tensorflow 1.15
+Other lib please refer to enviroment.yml
+
 ## Notebook Outline:
 1. Explore Dataset
   * Data overview (using [pandas-profiling](https://github.com/pandas-profiling/pandas-profiling))
