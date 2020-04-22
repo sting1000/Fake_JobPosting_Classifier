@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 from sklearn.metrics import average_precision_score, precision_recall_curve
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix, plot_precision_recall_curve
-
+from sklearn.metrics import roc_curve, auc, roc_auc_score
 sns.set(style="whitegrid")
 
 
@@ -26,7 +26,8 @@ def plot_cm(model, X_test, y_test):
         # get cm if model is a NN model
         predictions = model.predict(X_test)
         predictions = np.round(predictions).astype(int)
-        cm = tf.math.confusion_matrix(labels=np.ravel(y_test), predictions=predictions).numpy()
+        cm = tf.Session().run(
+            tf.math.confusion_matrix(labels=np.ravel(y_test), predictions=predictions))
         sns.heatmap(cm, annot=True)
 
     tn, fp, fn, tp = cm.ravel()
@@ -50,29 +51,40 @@ def plot_aucprc(model, X_test, y_test):
     :param y_test: dataframe with one lable column
     :return:
     """
+   
+
+    # draw prc
+    
     try:
         scores = model.decision_function(X_test)
-        # scores = model.predict_proba(X_test)[:, 1]
+        average_precision = average_precision_score(y_test, scores)
+        disp = plot_precision_recall_curve(model, X_test, y_test)
+        disp.ax_.set_title('Precision-Recall curve: '
+                        'AP={0:0.2f}'.format(average_precision))
     except:
         scores = model.predict(X_test)
+        average_precision = average_precision_score(y_test, scores)
 
-    
-    average_precision = average_precision_score(y_test, scores)
-    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
+    print('Precision-Recall curve: '
+                        'AP={0:0.2f}'.format(average_precision))
+    plt.show()
 
-    disp = plot_precision_recall_curve(model, X_test, y_test)
-    disp.ax_.set_title('2-class Precision-Recall curve: '
-                    'AP={0:0.2f}'.format(average_precision))
+    # draw roc
+    fpr, tpr, _ = roc_curve(np.ravel(y_test), scores)
+    roc_auc = auc(fpr, tpr)
 
-    # precision, recall, _ = precision_recall_curve(y_test, scores, pos_label=0)
-    # plt.plot(recall, precision, label='area = %0.3f' % average_precision, color="green")
-    # plt.xlim([0.0, 1.0])
-    # plt.ylim([0.0, 1.05])
-    # plt.xlabel('Recall')
-    # plt.ylabel('Precision')
-    # plt.title('Precision Recall Curve')
-    # plt.legend(loc="best")
-    # plt.show()
+    plt.figure()
+    lw = 2
+    plt.plot(fpr, tpr, color='darkorange', lw=lw,
+            label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC Curve: AUC={0:0.2f}'.format(roc_auc))
+    plt.legend(loc="lower right")
+    plt.show()
 
 
 def add_accum(df, col):

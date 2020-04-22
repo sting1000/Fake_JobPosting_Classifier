@@ -39,7 +39,7 @@ def victorize_tfidf(X_train, X_test, col):
     return X_train_wvec, X_test_wvec
 
 
-def victorize_glove(X_train, X_test, col, path='../../glove/glove.42B.300d.txt', dim=300):
+def victorize_glove(X_train, X_test, col, path='../../glove/glove.6B.300d.txt', dim=300):
     embeddings_index = {}
     with open(path, 'r') as f:
         for line in f:
