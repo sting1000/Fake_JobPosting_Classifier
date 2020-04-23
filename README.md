@@ -7,6 +7,13 @@ And it can be used to create classification models which can learn the job descr
 
 To have a better understanding of dataset, please download the [data_report](https://github.com/sting1000/Fake_JobPosting_Classifier/blob/master/data_report.html)
 
+## Dataset:
+1. JobPosting [link](https://www.kaggle.com/shivamb/real-or-fake-fake-jobposting-prediction/data)
+2. CountryCode [link](https://pkgstore.datahub.io/core/country-list/data_csv/data/d7c9d7cfb42cb69f4422dec222dbbaa8/data_csv.csv)
+3. Bert-base [link](https://github.com/google-research/bert)
+4. Alber-base [link](https://github.com/google-research/albert)
+
+
 ## Environment:
 * Python 3.6
 * Tensorflow 1.15
