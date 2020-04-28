@@ -30,7 +30,7 @@ def victorize_ft(X_train, X_test, col, path='./model/', training=False, dim=300,
     return X_train_vec, X_test_vec
 
 
-def victorize_cbow(X_train, X_test, col):
+def victorize_countVector(X_train, X_test, col):
     """
     Using CountVectorizer to vectorize the specified column in X_train and X_test, and replace the original column.
     :param X_train: dataframe

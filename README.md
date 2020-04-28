@@ -26,7 +26,7 @@ Other lib please refer to enviroment.yml
   * Remove stopwords
   * Lemmatization 
 4. Classifiers Related
-  * Word Embeddings (CBow, Tf-idf, Fasttext, Glove)
+  * Word Embeddings (countVector, Tf-idf, Fasttext, Glove)
   * Oversampling (SMOTE)
   * Models (Logistic Regression, Random Forest, XGBoost, Neural Network)
 4. Bert as encoder (Demo using [bert4keras](https://github.com/bojone/bert4keras))
